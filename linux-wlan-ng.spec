@@ -1,14 +1,14 @@
 #
 # TO DO:
-#  - add BR  pcmcia-cs
-#  - fix Configure
+#  fix to build without pcmcia-cs sources in /usr/src
+#  add to config pci & usb device support 
 
 %define         _pre    pre4
 Summary:	PCMCIA wireless microwave network card services - new generation 11Mbit
 Summary(pl):	Obs³uga mikrofalowych kart sieciowych PCMCIA - nowa generacja 11Mbit
 Name:		linux-wlan-ng
 Version:	0.2.1
-Release:	0.%{_pre}.1
+Release:	%{_pre}.0.2
 License:	MPL
 Group:		Applications/System
 Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}-%{_pre}.tar.gz
@@ -31,19 +31,21 @@ nowej generacji kart sieciowych PCMCIA w Twoim PLD-Linuksie.
 %setup -q -n %{name}-%{version}-%{_pre}
 
 %build
-%Configure
-%{__make}
+make auto_config
+#./Configure
+make all
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sbindir}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/pcmcia
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/interfaces
 install -d $RPM_BUILD_ROOT%{_mandir}/man8
-install wlanctl/wlanctl $RPM_BUILD_ROOT%{_sbindir}
-install wlandump/wlandump $RPM_BUILD_ROOT%{_sbindir}
-install scripts/wla* $RPM_BUILD_ROOT%{_sysconfdir}/pcmcia
-install man/*.8 $RPM_BUILD_ROOT%{_mandir}/man8
-mv -f $RPM_BUILD_ROOT%{_sysconfdir}/pcmcia/wlan.config /$RPM_BUILD_ROOT%{_sysconfdir}/pcmcia/wlan.conf
+install src/wlanctl/wlanctl $RPM_BUILD_ROOT%{_sbindir}
+install src/wlancfg/wlancfg $RPM_BUILD_ROOT%{_sbindir}
+install src/wland/wland $RPM_BUILD_ROOT%{_sbindir}
+install etc/wlan/wla* $RPM_BUILD_ROOT%{_sysconfdir}/pcmcia
+install man/*.man $RPM_BUILD_ROOT%{_mandir}/man8
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -64,13 +66,12 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc SUPPORTED.CARDS CHANGES COPYING README
-%doc FAQ.isa README.debug README.isa README.linuxppc
-%doc README.wep TODO THANKS
+%doc CHANGES COPYING README
+%doc FAQ TODO THANKS
 
 %attr(755,root,root) %{_sbindir}/*
-%attr(755,root,root) %{_sysconfdir}/pcmcia/wlan
+%attr(755,root,root) %{_sysconfdir}/pcmcia
 %attr(644,root,root) %{_sysconfdir}/pcmcia/wlan.conf
-%attr(600,root,root) %config %verify(not size mtime md5) %{_sysconfdir}/pcmcia/wlan.opts
-%attr(600,root,root) %config %verify(not size mtime md5) %{_sysconfdir}/pcmcia/wlan.network.opts
+#%attr(600,root,root) %config %verify(not size mtime md5) %{_sysconfdir}/pcmcia/wlan.opts
+#%attr(600,root,root) %config %verify(not size mtime md5) %{_sysconfdir}/pcmcia/wlan.network.opts
 %{_mandir}/man8/*
