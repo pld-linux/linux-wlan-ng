@@ -3,9 +3,9 @@
 #  fix to build without pcmcia-cs sources in /usr/src
 #  add to config pci & usb device support
 
-%define         _pre    pre12
+%define		_pre	pre12
 %define		_rel	0.%{_pre}.1
-Summary:	wireless microwave network card services - new generation 11Mbit
+Summary:	Wireless microwave network card services - new generation 11Mbit
 Summary(pl):	Obs³uga mikrofalowych kart sieciowych - nowa generacja 11Mbit
 Name:		linux-wlan-ng
 Version:	0.2.1
@@ -16,7 +16,7 @@ Group:		Applications/System
 Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}-%{_pre}.tar.gz
 # Source0-md5:	0d91e7a411c1cdfdde398d408d966218
 Patch0:		%{name}-pcmcia.patch
-Patch1:         %{name}-install.patch
+Patch1:		%{name}-install.patch
 Patch2:		%{name}-init.patch
 Patch3:		%{name}-wland.patch
 Patch4:		%{name}-gcc2.patch
@@ -28,57 +28,58 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sbindir	/sbin
 
 %description
-The pcmcia-cs package adds new generation microwave wirelless
+The linux-wlan-ng package adds new generation microwave wirelless
 networks cards dirvers for your PLD-Linux system.
 
 %description -l pl
-Pakiet zawiera programy wspieraj±ce obs³ugê mikrofalowych kart sieciowych.
+Pakiet linux-wlan-ng zawiera programy wspieraj±ce obs³ugê
+mikrofalowych kart sieciowych.
 
 %package pcmcia
 Summary:	PCMCIA wireless microwave network card services - new generation 11Mbit
 Summary(pl):	Obs³uga mikrofalowych kart sieciowych PCMCIA - nowa generacja 11Mbit
 Group:		Applications/System
-Release:        %{_rel}
+Release:	%{_rel}
 Prereq:		pcmcia-cs
 Requires:	%{name}
+
 %description pcmcia
-The pcmcia-cs package adds new generation microwave wirelless PCMCIA
-networks cards dirvers for your PLD-Linux system.
+The linux-wlan-ng-pcmcia package adds new generation microwave
+wirelless PCMCIA networks cards dirvers for your PLD-Linux system.
 
 %description -l pl pcmcia
-Pakiet zawiera programy wspieraj±ce obs³ugê mikrofalowych kart sieciowych 
-PCMCIA.
+Pakiet linux-wlan-ng-pcmcia zawiera programy wspieraj±ce obs³ugê
+mikrofalowych kart sieciowych PCMCIA.
 
 
 %package -n kernel-net-wlan-ng
-Summary:	dirvers for wireless microwave network cards
+Summary:	Drivers for wireless microwave network cards
 Summary(pl):	Sterowniki mikrofalowych kart sieciowych
 Group:		Applications/System
-Release:        %{_rel}@%{_kernel_ver_str}
+Release:	%{_rel}@%{_kernel_ver_str}
 
 %description -n kernel-net-wlan-ng
 Drivers for microwave wirelless network cards.
 
 %description -n kernel-net-wlan-ng -l pl
-Pakiet zawiera sterowniki nowej generacji dla mikrofalowych 
-kart sieciowych.
+Pakiet zawiera sterowniki nowej generacji dla mikrofalowych kart
+sieciowych.
 
 %package -n kernel-net-wlan-ng-pcmcia
-Summary:	dirvers for PCMCIA wireless microwave network cards
+Summary:	Drivers for PCMCIA wireless microwave network cards
 Summary(pl):	Sterowniki mikrofalowych kart sieciowych PCMCIA
 Group:		Applications/System
-Release:        %{_rel}@%{_kernel_ver_str}
+Release:	%{_rel}@%{_kernel_ver_str}
 
 %description -n kernel-net-wlan-ng-pcmcia
 Drivers for microwave wirelless PCMCIA network cards.
 
 %description -n kernel-net-wlan-ng-pcmcia -l pl
-Pakiet zawiera sterowniki nowej generacji dla mikrofalowych 
-kart sieciowych PCMCIA
-
+Pakiet zawiera sterowniki nowej generacji dla mikrofalowych kart
+sieciowych PCMCIA.
 
 %prep
-%setup -q -n %{name}-%{version}-%{_pre} 
+%setup -q -n %{name}-%{version}-%{_pre}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
