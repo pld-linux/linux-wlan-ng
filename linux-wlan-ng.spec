@@ -3,8 +3,8 @@
 #  fix to build without pcmcia-cs sources in /usr/src
 #  add to config pci & usb device support
 
-%define		_pre	pre12
-%define		_rel	0.%{_pre}.1
+%define		_pre	pre13
+%define		_rel	0.%{_pre}.0.1
 Summary:	Wireless microwave network card services - new generation 11Mbit
 Summary(pl):	Obs³uga mikrofalowych kart sieciowych - nowa generacja 11Mbit
 Name:		linux-wlan-ng
@@ -14,7 +14,7 @@ Epoch:		1
 License:	MPL
 Group:		Applications/System
 Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}-%{_pre}.tar.gz
-# Source0-md5:	0d91e7a411c1cdfdde398d408d966218
+# Source0-md5:	7d166956c94bdcbc9f8881b2bad4391c
 Patch0:		%{name}-pcmcia.patch
 Patch1:		%{name}-install.patch
 Patch2:		%{name}-init.patch
