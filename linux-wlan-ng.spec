@@ -14,13 +14,14 @@ Summary(pl):	Obs³uga mikrofalowych kart sieciowych - nowa generacja 11Mbit
 Name:		linux-wlan-ng
 Epoch:		1
 Version:	0.2.1
-%define		_pre	pre21
+%define		_pre	pre26
 %define		_rel	0.%{_pre}.1
 Release:	%{_rel}
 License:	MPL
 Group:		Applications/System
-Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}%{_pre}.tar.bz2
-# Source0-md5:	91eaa768b77cccd0f18230bc8d82eeea
+Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}-%{_pre}.tar.bz2
+# Source0-md5:	fff64e543e094b2007d614697f505344
+# Source0-size:	456977
 Patch0:		%{name}-Makefile.patch
 Patch1:		%{name}-pcmcia.patch
 Patch2:		%{name}-init.patch
@@ -122,8 +123,8 @@ Pakiet zawiera sterowniki nowej generacji dla mikrofalowych kart
 sieciowych PCMCIA.
 
 %prep
-%setup -q -n %{name}-%{version}%{_pre}
-%patch0 -p1
+%setup -q -n %{name}-%{version}-%{_pre}
+#%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -131,7 +132,11 @@ sieciowych PCMCIA.
 %build
 sed -i "s#PCMCIA_SRC=.*#PCMCIA_SRC=%{_kernelsrcdir}#g; s#PRISM2_\([^=]*\)=[yn]#PRISM2_\1=y#; s#TARGET_ROOT_ON_HOST=#TARGET_ROOT_ON_HOST=$RPM_BUILD_ROOT#" config.in
 make auto_config
-
+cd src
+ln -sf ../config.mk config.mk
+cd prism2
+ln -sf ../../config.mk config.mk
+cd ../..
 %{?with_userspace:%{__make} all}
 
 %if %{with kernel}
@@ -144,6 +149,14 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 	exit 1
     fi
+	cd p80211
+	ln -sf ../include/wlan wlan
+	cd ../prism2
+	ln -sf ../include/wlan wlan
+	cd driver
+	ln -sf ../../include/wlan wlan
+	ln -sf ../include/prism2 prism2
+	cd ../..
     for d in p80211 prism2/driver; do
 	cd $w/$d
 	rm -rf include
@@ -158,6 +171,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	    M=$PWD O=$PWD \
 	    %{?with_verbose:V=1}
 	mv *.ko $w/built-$cfg
+	cd ../..
     done
 done
 cd $w
