@@ -5,12 +5,14 @@ Version:	0.1.12
 Release:	0.1
 License:	MPL (Mozilla Public License)
 Group:		Applications/System
-Source0:	ftp://ftp.linux-wlan.com/pub/linux-wlan-ng/%{name}-%{version}.tar.gz
-#Patch0:		%{name}.pld.patch
+Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}.tar.gz
+#Patch0:	%{name}.pld.patch
 URL:		http://www.linux-wlan.com/
 Prereq:		pcmcia-cs
 ExcludeArch:	sparc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		_sbindir	/sbin
 
 %description
 The pcmcia-cs package adds new generation microwave wirelless PCMCIA
@@ -29,18 +31,14 @@ nowej generacji kart sieciowych PCMCIA w Twoim PLD-Linuksie.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/sbin
+install -d $RPM_BUILD_ROOT%{_sbindir}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/pcmcia
 install -d $RPM_BUILD_ROOT%{_mandir}/man8
-install wlanctl/wlanctl $RPM_BUILD_ROOT/sbin
-install wlandump/wlandump $RPM_BUILD_ROOT/sbin
+install wlanctl/wlanctl $RPM_BUILD_ROOT%{_sbindir}
+install wlandump/wlandump $RPM_BUILD_ROOT%{_sbindir}
 install scripts/wla* $RPM_BUILD_ROOT%{_sysconfdir}/pcmcia
 install man/*.8 $RPM_BUILD_ROOT%{_mandir}/man8
 mv -f $RPM_BUILD_ROOT%{_sysconfdir}/pcmcia/wlan.config /$RPM_BUILD_ROOT%{_sysconfdir}/pcmcia/wlan.conf
-
-gzip -9nf SUPPORTED.CARDS CHANGES COPYING README \
-	FAQ.isa README.debug README.isa README.linuxppc \
-	README.wep TODO THANKS
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -61,9 +59,11 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz
-%attr(755,root,root) /sbin/*
+%doc SUPPORTED.CARDS CHANGES COPYING README
+%doc FAQ.isa README.debug README.isa README.linuxppc
+%doc README.wep TODO THANKS
 
+%attr(755,root,root) %{_sbindir}/*
 %attr(755,root,root) %{_sysconfdir}/pcmcia/wlan
 %attr(644,root,root) %{_sysconfdir}/pcmcia/wlan.conf
 %attr(600,root,root) %config %verify(not size mtime md5) %{_sysconfdir}/pcmcia/wlan.opts
