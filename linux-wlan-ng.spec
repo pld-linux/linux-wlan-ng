@@ -3,7 +3,7 @@ Summary(pl):	Obs³uga mikrofalowych kart sieciowych PCMCIA - nowa generacja 11Mbi
 Name:		linux-wlan-ng
 Version:	0.1.12
 Release:	0.2
-License:	Mozilla Public License
+License:	MPL
 Group:		Applications/System
 Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}.tar.gz
 #Patch0:	%{name}.pld.patch
