@@ -17,6 +17,7 @@ Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}-%{_pre}.t
 Patch0:		%{name}-pcmcia.patch
 Patch1:         %{name}-install.patch
 Patch2:		%{name}-init.patch
+BuildRequires:	kernel-headers
 URL:		http://www.linux-wlan.com/
 ExcludeArch:	sparc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -90,6 +91,9 @@ make auto_config
 rm -rf $RPM_BUILD_ROOT
 make install
 mv $RPM_BUILD_ROOT/lib/modules/%{__kernel_ver} $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}
+install -d $RPM_BUILD_ROOT/etc/rc.d/init.d/
+install etc/rc.wlan $RPM_BUILD_ROOT/etc/rc.d/init.d/wlan
+
 %clean
 #rm -rf $RPM_BUILD_ROOT
 
