@@ -12,6 +12,7 @@ Release:	%{_pre}.0.2
 License:	MPL
 Group:		Applications/System
 Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}-%{_pre}.tar.gz
+# Source0-md5:	63ddd43cfd875601e88a66e21946cc8b
 URL:		http://www.linux-wlan.com/
 Prereq:		pcmcia-cs
 ExcludeArch:	sparc sparc64
