@@ -1,7 +1,7 @@
 #
 # TO DO:
 #  fix to build without pcmcia-cs sources in /usr/src
-#  add to config pci & usb device support 
+#  add to config pci & usb device support
 
 %define         _pre    pre9
 Summary:	PCMCIA wireless microwave network card services - new generation 11Mbit
