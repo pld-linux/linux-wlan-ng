@@ -6,14 +6,17 @@
 %bcond_without	userspace	# don't build userspace module
 %bcond_with	verbose		# verbose build (V=1)
 #
+# TODO:
+#	- check %%desc, R:, BR:, cflags
+#
 Summary:	Wireless microwave network card services - new generation 11Mbit
 Summary(pl):	Obs³uga mikrofalowych kart sieciowych - nowa generacja 11Mbit
 Name:		linux-wlan-ng
+Epoch:		1
 Version:	0.2.1
 %define		_pre	pre21
 %define		_rel	0.%{_pre}.1
 Release:	%{_rel}
-Epoch:		1
 License:	MPL
 Group:		Applications/System
 Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}%{_pre}.tar.bz2
@@ -22,8 +25,6 @@ Patch0:		%{name}-Makefile.patch
 Patch1:		%{name}-pcmcia.patch
 Patch2:		%{name}-init.patch
 Patch3:		%{name}-wland.patch
-#Patch:		%{name}-install.patch
-#Patch:		%{name}-gcc2.patch
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.153
 URL:		http://www.linux-wlan.com/
@@ -43,10 +44,9 @@ mikrofalowych kart sieciowych.
 %package pcmcia
 Summary:	PCMCIA wireless microwave network card services - new generation 11Mbit
 Summary(pl):	Obs³uga mikrofalowych kart sieciowych PCMCIA - nowa generacja 11Mbit
-Group:		Applications/System
 Release:	%{_rel}
+Group:		Applications/System
 Prereq:		pcmcia-cs
-Requires:	%{name}
 
 %description pcmcia
 The linux-wlan-ng-pcmcia package adds new generation microwave
@@ -59,8 +59,10 @@ mikrofalowych kart sieciowych PCMCIA.
 %package -n kernel-net-wlan-ng
 Summary:	Drivers for wireless microwave network cards
 Summary(pl):	Sterowniki mikrofalowych kart sieciowych
-Group:		Applications/System
 Release:	%{_rel}@%{_kernel_ver_str}
+Group:		Applications/System
+%{?with_dist_kernel:%requires_releq_kernel_up}
+Requires(post,postun):	/sbin/depmod
 
 %description -n kernel-net-wlan-ng
 Drivers for microwave wirelless network cards.
@@ -72,8 +74,11 @@ sieciowych.
 %package -n kernel-smp-net-wlan-ng
 Summary:	Drivers for wireless microwave network cards
 Summary(pl):	Sterowniki mikrofalowych kart sieciowych
-Group:		Applications/System
 Release:	%{_rel}@%{_kernel_ver_str}
+Group:		Applications/System
+%{?with_dist_kernel:%requires_releq_kernel_smp}
+Requires(post,postun):	/sbin/depmod
+Provides:	kernel-net-wlan-ng
 
 %description -n kernel-smp-net-wlan-ng
 Drivers for microwave wirelless network cards.
@@ -85,8 +90,10 @@ sieciowych.
 %package -n kernel-net-wlan-ng-pcmcia
 Summary:	Drivers for PCMCIA wireless microwave network cards
 Summary(pl):	Sterowniki mikrofalowych kart sieciowych PCMCIA
-Group:		Applications/System
 Release:	%{_rel}@%{_kernel_ver_str}
+Group:		Applications/System
+%{?with_dist_kernel:%requires_releq_kernel_up}
+Requires(post,postun):	/sbin/depmod
 
 %description -n kernel-net-wlan-ng-pcmcia
 Drivers for microwave wirelless PCMCIA network cards.
@@ -98,8 +105,11 @@ sieciowych PCMCIA.
 %package -n kernel-smp-net-wlan-ng-pcmcia
 Summary:	Drivers for PCMCIA wireless microwave network cards
 Summary(pl):	Sterowniki mikrofalowych kart sieciowych PCMCIA
-Group:		Applications/System
 Release:	%{_rel}@%{_kernel_ver_str}
+Group:		Applications/System
+%{?with_dist_kernel:%requires_releq_kernel_smp}
+Requires(post,postun):	/sbin/depmod
+Provides:	kernel-net-wlan-ng-pcmcia
 
 %description -n kernel-smp-net-wlan-ng-pcmcia
 Drivers for microwave wirelless PCMCIA network cards.
@@ -122,8 +132,8 @@ make auto_config
 %{?with_userspace:%{__make} all}
 
 %if %{with kernel}
-%{__make} -C mkmeta all
 cd src
+%{__make} -C mkmeta all
 rm -rf built*
 mkdir -p built-{smp,up,nondist}
 w=$PWD
@@ -153,8 +163,6 @@ cd $w
 %install
 rm -rf $RPM_BUILD_ROOT
 
-#install -d $RPM_BUILD_ROOT/etc/rc.d/init.d/
-#install etc/rc.wlan $RPM_BUILD_ROOT/etc/rc.d/init.d/wlan
 %{?with_userspace:%{__make} install}
 
 %if %{with kernel}
