@@ -36,9 +36,9 @@ nowej generacji kart sieciowych PCMCIA w Twoim PLD-Linuksie.
 %build
 ln -s pcmcia-cs-* pcmcia-cs
 cp -f config.in config.in.org
-sed -e 's#PCMCIA_SRC=.*#PCMCIA_SRC=pcmcia-cs#g' config.in.org > config.in
+sed -e 's#PCMCIA_SRC=.*#PCMCIA_SRC=/usr/src/pcmcia-cs#g' config.in.org > config.in
 make auto_config
-#./Configure
+./Configure
 %{__make} all
 
 %install
