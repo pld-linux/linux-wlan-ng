@@ -17,6 +17,7 @@ Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}-%{_pre}.t
 Patch0:		%{name}-pcmcia.patch
 Patch1:         %{name}-install.patch
 Patch2:		%{name}-init.patch
+Patch3:		%{name}-wland.patch
 BuildRequires:	kernel-headers
 URL:		http://www.linux-wlan.com/
 ExcludeArch:	sparc sparc64
@@ -79,6 +80,7 @@ kart sieciowych PCMCIA
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 ln -s pcmcia-cs-* pcmcia-cs
