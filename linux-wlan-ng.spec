@@ -27,6 +27,7 @@ Patch2:		%{name}-init.patch
 Patch3:		%{name}-wland.patch
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.153
+Requires(post,preun):	/sbin/chkconfig
 URL:		http://www.linux-wlan.com/
 ExcludeArch:	sparc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
