@@ -14,6 +14,7 @@ Epoch:		1
 License:	MPL
 Group:		Applications/System
 Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}-%{_pre}.tar.gz
+# Source0-md5:	0d91e7a411c1cdfdde398d408d966218
 Patch0:		%{name}-pcmcia.patch
 Patch1:         %{name}-install.patch
 Patch2:		%{name}-init.patch
