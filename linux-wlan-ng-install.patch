@@ -1,4 +1,3 @@
-diff -Naur linux-wlan-ng-0.2.1-pre12.orig/man/Makefile linux-wlan-ng-0.2.1-pre12/man/Makefile
 --- linux-wlan-ng-0.2.1-pre12.orig/man/Makefile	2003-09-24 18:31:45.000000000 +0200
 +++ linux-wlan-ng-0.2.1-pre12/man/Makefile	2003-09-24 18:32:10.000000000 +0200
 @@ -48,9 +48,9 @@
@@ -13,49 +12,32 @@ diff -Naur linux-wlan-ng-0.2.1-pre12.orig/man/Makefile linux-wlan-ng-0.2.1-pre12
  
  clean:
  	rm -f core core.* *.o .*.o *.s *.a .depend tmp_make *~ tags
-diff -Naur linux-wlan-ng-0.2.1-pre12.orig/src/p80211/Makefile linux-wlan-ng-0.2.1-pre12/src/p80211/Makefile
---- linux-wlan-ng-0.2.1-pre12.orig/src/p80211/Makefile	2003-09-24 18:31:45.000000000 +0200
-+++ linux-wlan-ng-0.2.1-pre12/src/p80211/Makefile	2003-09-24 18:32:10.000000000 +0200
-@@ -137,8 +137,8 @@
- 	chmod -x $@
+--- linux-wlan-ng-0.2.1pre21/src/p80211/Makefile.orig	2004-05-04 17:15:21.000000000 +0200
++++ linux-wlan-ng-0.2.1pre21/src/p80211/Makefile	2004-05-31 07:52:51.212153304 +0200
+@@ -100,10 +100,10 @@
+ 	rm -f *.o *.ko .*.cmd *.mod.c  *.flags .*.flags
  
- install : $(MODULES)
--	mkdir -p $(TARGET_MODDIR)/net
--	cp $(P80211_MODULE) $(TARGET_MODDIR)/net
+ install:
+-	mkdir -p $(TARGET_MODDIR)/linux-wlan-ng/net
 +	mkdir -p $(TARGET_MODDIR)/kernel/drivers/net
-+	cp $(P80211_MODULE) $(TARGET_MODDIR)/kernel/drivers/net
- 
- clean: 
- 	rm -f core core.* *.o .*.o *.s *.a .depend tmp_make *~ tags
-diff -Naur linux-wlan-ng-0.2.1-pre12.orig/src/prism2/driver/Makefile linux-wlan-ng-0.2.1-pre12/src/prism2/driver/Makefile
---- linux-wlan-ng-0.2.1-pre12.orig/src/prism2/driver/Makefile	2003-09-24 18:31:45.000000000 +0200
-+++ linux-wlan-ng-0.2.1-pre12/src/prism2/driver/Makefile	2003-09-24 18:33:08.000000000 +0200
-@@ -151,20 +151,20 @@
- 		rm -rf $(TARGET_MODDIR)/kernel/3rdparty/prism* ;\
- 	fi
- ifeq ($(PRISM2_PCMCIA), y)
--	mkdir -p $(TARGET_MODDIR)/pcmcia
--	cp -f $(CS_MODULE) $(TARGET_MODDIR)/pcmcia 
-+	mkdir -p $(TARGET_MODDIR)/kernel/drivers/pcmcia
-+	cp -f $(CS_MODULE) $(TARGET_MODDIR)/kernel/drivers/pcmcia 
- endif
- ifeq ($(PRISM2_PCI), y)
--	mkdir -p $(TARGET_MODDIR)/net
--	cp -f $(PCI_MODULE) $(TARGET_MODDIR)/net 
-+	mkdir -p $(TARGET_MODDIR)/kernel/drivers/net
-+	cp -f $(PCI_MODULE) $(TARGET_MODDIR)/kernel/drivers/net 
- endif
- ifeq ($(PRISM2_PLX), y)
--	mkdir -p $(TARGET_MODDIR)/net
--	cp -f $(PLX_MODULE) $(TARGET_MODDIR)/net 
-+	mkdir -p $(TARGET_MODDIR)/kernel/drivers/net
-+	cp -f $(PLX_MODULE) $(TARGET_MODDIR)/kernel/drivers/net 
- endif
- ifeq ($(PRISM2_USB), y)
--	mkdir -p $(TARGET_MODDIR)/usb
--	cp -f $(USB_MODULE) $(TARGET_MODDIR)/usb 
-+	mkdir -p $(TARGET_MODDIR)/kernel/drivers/usb
-+	cp -f $(USB_MODULE) $(TARGET_MODDIR)/kernel/drivers/usb 
+ ifeq ($(KERN_25), y)
+-	cp p80211.ko	$(TARGET_MODDIR)/linux-wlan-ng
++	cp p80211.ko	$(TARGET_MODDIR)/kernel/drivers/net
+ else
+-	cp p80211.o	$(TARGET_MODDIR)/linux-wlan-ng
++	cp p80211.o	$(TARGET_MODDIR)/kernel/drivers/net
  endif
  
- clean: 
+--- linux-wlan-ng-0.2.1pre21/src/prism2/driver/Makefile.orig	2004-05-04 17:15:22.000000000 +0200
++++ linux-wlan-ng-0.2.1pre21/src/prism2/driver/Makefile	2004-05-31 07:54:07.998480008 +0200
+@@ -104,8 +104,8 @@
+ 
+ install:
+ ifeq ($(KERN_25), y)
+-	cp $(obj-m:.o=.ko)	$(TARGET_MODDIR)/linux-wlan-ng
++	cp $(obj-m:.o=.ko)	$(TARGET_MODDIR)/kernel/drivers/net
+ else
+-	cp $(obj-m)	$(TARGET_MODDIR)/linux-wlan-ng
++	cp $(obj-m)	$(TARGET_MODDIR)/kernel/drivers/net
+ endif
+ 
