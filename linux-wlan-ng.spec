@@ -53,7 +53,7 @@ Prereq:		pcmcia-cs
 The linux-wlan-ng-pcmcia package adds new generation microwave
 wirelless PCMCIA networks cards dirvers for your PLD-Linux system.
 
-%description -l pl pcmcia
+%description pcmcia -l pl
 Pakiet linux-wlan-ng-pcmcia zawiera programy wspieraj±ce obs³ugê
 mikrofalowych kart sieciowych PCMCIA.
 
