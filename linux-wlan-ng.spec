@@ -4,66 +4,118 @@
 #  add to config pci & usb device support
 
 %define         _pre    pre12
-Summary:	PCMCIA wireless microwave network card services - new generation 11Mbit
-Summary(pl):	Obs³uga mikrofalowych kart sieciowych PCMCIA - nowa generacja 11Mbit
+%define		_rel	0.%{_pre}.1
+Summary:	wireless microwave network card services - new generation 11Mbit
+Summary(pl):	Obs³uga mikrofalowych kart sieciowych - nowa generacja 11Mbit
 Name:		linux-wlan-ng
 Version:	0.2.1
-Release:	%{_pre}.0.1
+Release:	%{_rel}
+Epoch:		1
 License:	MPL
 Group:		Applications/System
 Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}-%{_pre}.tar.gz
-# Source0-md5:	0d91e7a411c1cdfdde398d408d966218
-Source1:	http://dl.sourceforge.net/pcmcia-cs/pcmcia-cs-3.2.4.tar.gz
-# Source1-md5:	126e2d87e7a8a12e283db37ae82e9e4c
+Patch0:		%{name}-pcmcia.patch
+Patch1:         %{name}-install.patch
+Patch2:		%{name}-init.patch
 URL:		http://www.linux-wlan.com/
-Prereq:		pcmcia-cs
 ExcludeArch:	sparc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
 
 %description
-The pcmcia-cs package adds new generation microwave wirelless PCMCIA
-networks cards handling support for your PLD-Linux system.
+The pcmcia-cs package adds new generation microwave wirelless
+networks cards dirvers for your PLD-Linux system.
 
 %description -l pl
-Pakiet pcmcia-cs zawiera programy wspieraj±ce obs³ugê mikrofalowych
-nowej generacji kart sieciowych PCMCIA w Twoim PLD-Linuksie.
+Pakiet zawiera programy wspieraj±ce obs³ugê mikrofalowych kart sieciowych.
+
+%package pcmcia
+Summary:	PCMCIA wireless microwave network card services - new generation 11Mbit
+Summary(pl):	Obs³uga mikrofalowych kart sieciowych PCMCIA - nowa generacja 11Mbit
+Group:		Applications/System
+Release:        %{_rel}
+Prereq:		pcmcia-cs
+Requires:	%{name}
+%description pcmcia
+The pcmcia-cs package adds new generation microwave wirelless PCMCIA
+networks cards dirvers for your PLD-Linux system.
+
+%description -l pl pcmcia
+Pakiet zawiera programy wspieraj±ce obs³ugê mikrofalowych kart sieciowych 
+PCMCIA.
+
+
+%package -n kernel-net-wlan-ng
+Summary:	dirvers for wireless microwave network cards
+Summary(pl):	Sterowniki mikrofalowych kart sieciowych
+Group:		Applications/System
+Release:        %{_rel}@%{_kernel_ver_str}
+
+%description -n kernel-net-wlan-ng
+Drivers for microwave wirelless network cards.
+
+%description -n kernel-net-wlan-ng -l pl
+Pakiet zawiera sterowniki nowej generacji dla mikrofalowych 
+kart sieciowych.
+
+%package -n kernel-net-wlan-ng-pcmcia
+Summary:	dirvers for PCMCIA wireless microwave network cards
+Summary(pl):	Sterowniki mikrofalowych kart sieciowych PCMCIA
+Group:		Applications/System
+Release:        %{_rel}@%{_kernel_ver_str}
+
+%description -n kernel-net-wlan-ng-pcmcia
+Drivers for microwave wirelless PCMCIA network cards.
+
+%description -n kernel-net-wlan-ng-pcmcia -l pl
+Pakiet zawiera sterowniki nowej generacji dla mikrofalowych 
+kart sieciowych PCMCIA
+
 
 %prep
-%setup -q -n %{name}-%{version}-%{_pre} -a1
+%setup -q -n %{name}-%{version}-%{_pre} 
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 ln -s pcmcia-cs-* pcmcia-cs
 cp -f config.in config.in.org
-sed -e 's#PCMCIA_SRC=.*#PCMCIA_SRC=/usr/src/pcmcia-cs#g' config.in.org > config.in
+sed -e "s#PCMCIA_SRC=.*#PCMCIA_SRC=/usr/src/linux#g; s#PRISM2_\([^=]*\)=[yn]#PRISM2_\1=y#; s#TARGET_ROOT_ON_HOST=#TARGET_ROOT_ON_HOST=$RPM_BUILD_ROOT#" config.in.org > config.in
 make auto_config
-./Configure
 %{__make} all
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sbindir}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/pcmcia
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/interfaces
-install -d $RPM_BUILD_ROOT%{_mandir}/man8
-install src/wlanctl/wlanctl $RPM_BUILD_ROOT%{_sbindir}
-install src/wlancfg/wlancfg $RPM_BUILD_ROOT%{_sbindir}
-install src/wland/wland $RPM_BUILD_ROOT%{_sbindir}
-install etc/wlan/wla* $RPM_BUILD_ROOT%{_sysconfdir}/pcmcia
-install man/*.man $RPM_BUILD_ROOT%{_mandir}/man8
-
+make install
+mv $RPM_BUILD_ROOT/lib/modules/%{__kernel_ver} $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}
 %clean
-rm -rf $RPM_BUILD_ROOT
+#rm -rf $RPM_BUILD_ROOT
 
 %post
+if [ -f /var/lock/subsys/wlan ]; then
+	/etc/rc.d/init.d/wlan restart 2> /dev/null
+else
+	echo "Tape \"/etc/rc.d/init.d/wlan start to start wland daemon."
+fi
+/sbin/chkconfig --add wlan
+
+%preun
+if [ -f /var/lock/subsys/wlan ]; then
+	/etc/rc.d/init.d/wlan stop 2> /dev/null
+fi
+/sbin/chkconfig --del wlan
+
+
+%post pcmcia
 if [ -f /var/lock/subsys/pcmcia ]; then
 	/etc/rc.d/init.d/pcmcia restart 2> /dev/null
 else
 	echo "Run \"/rc.d/init.d/pcmcia start\" to start pcmcia cardbus daemon."
 fi
 
-%postun
+%postun pcmcia
 if [ "$1" = "0" ]; then
 	if [ -f /var/state/run/pcmcia ]; then
 		/etc/rc.d/init.d/pcmcia restart 2> /dev/null
@@ -72,12 +124,21 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES COPYING README
-%doc FAQ TODO THANKS
-
+%doc CHANGES COPYING README FAQ TODO THANKS
 %attr(755,root,root) %{_sbindir}/*
-%attr(755,root,root) %{_sysconfdir}/pcmcia
-%attr(644,root,root) %{_sysconfdir}/pcmcia/wlan.conf
-#%attr(600,root,root) %config %verify(not size mtime md5) %{_sysconfdir}/pcmcia/wlan.opts
-#%attr(600,root,root) %config %verify(not size mtime md5) %{_sysconfdir}/pcmcia/wlan.network.opts
-%{_mandir}/man8/*
+%attr(754,root,root) /etc/rc.d/init.d/*
+%{_mandir}/man1/*
+%attr(644,root,root) %{_sysconfdir}/wlan/*
+
+%files pcmcia
+%defattr(644,root,root,755)
+%attr(644,root,root) %{_sysconfdir}/pcmcia/*
+
+%files -n kernel-net-wlan-ng
+%defattr(644,root,root,755)
+/lib/modules/%{_kernel_ver}/kernel/drivers/net/*
+/lib/modules/%{_kernel_ver}/kernel/drivers/usb/*
+
+%files -n kernel-net-wlan-ng-pcmcia
+%defattr(644,root,root,755)
+/lib/modules/%{_kernel_ver}/kernel/drivers/pcmcia/*
