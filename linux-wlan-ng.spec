@@ -1,12 +1,17 @@
+#
+# TO DO:
+#  - add BR  pcmcia-cs
+#  - fix Configure
+
+%define         _pre    pre4
 Summary:	PCMCIA wireless microwave network card services - new generation 11Mbit
 Summary(pl):	Obs³uga mikrofalowych kart sieciowych PCMCIA - nowa generacja 11Mbit
 Name:		linux-wlan-ng
-Version:	0.1.12
-Release:	0.2
+Version:	0.2.1
+Release:	0.%{_pre}.1
 License:	MPL
 Group:		Applications/System
-Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}.tar.gz
-#Patch0:	%{name}.pld.patch
+Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}-%{_pre}.tar.gz
 URL:		http://www.linux-wlan.com/
 Prereq:		pcmcia-cs
 ExcludeArch:	sparc sparc64
@@ -23,11 +28,11 @@ Pakiet pcmcia-cs zawiera programy wspieraj±ce obs³ugê mikrofalowych
 nowej generacji kart sieciowych PCMCIA w Twoim PLD-Linuksie.
 
 %prep
-%setup -q
-#%patch0 -p0
+%setup -q -n %{name}-%{version}-%{_pre}
 
 %build
-%{__make} all
+%Configure
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
