@@ -79,6 +79,7 @@ Group:		Applications/System
 %{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
 Provides:	kernel-net-wlan-ng
+Obsoletes:	kernel-net-wlan-ng
 
 %description -n kernel-smp-net-wlan-ng
 Drivers for microwave wirelless network cards.
@@ -110,6 +111,7 @@ Group:		Applications/System
 %{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
 Provides:	kernel-net-wlan-ng-pcmcia
+Obsoletes:	kernel-net-wlan-ng-pcmcia
 
 %description -n kernel-smp-net-wlan-ng-pcmcia
 Drivers for microwave wirelless PCMCIA network cards.
