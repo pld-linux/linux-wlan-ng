@@ -7,7 +7,7 @@ License:	MPL (Mozilla Public License)
 Group:		Applications/System
 Group(de):	Applikationen/System
 Group(pl):	Aplikacje/System
-Source0:	ftp://ftp.linux-wlan.com/pub/linux-wlan/%{name}-%{version}.tar.gz
+Source0:	ftp://ftp.linux-wlan.com/pub/linux-wlan-ng/%{name}-%{version}.tar.gz
 #Patch0:		%{name}.pld.patch
 URL:		http://www.linux-wlan.com/
 Prereq:		pcmcia-cs
