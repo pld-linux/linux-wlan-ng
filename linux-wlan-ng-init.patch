@@ -1,0 +1,179 @@
+diff -Naur linux-wlan-ng-0.2.1-pre12.orig/etc/rc.wlan linux-wlan-ng-0.2.1-pre12/etc/rc.wlan
+--- linux-wlan-ng-0.2.1-pre12.orig/etc/rc.wlan	2003-09-24 20:43:49.000000000 +0200
++++ linux-wlan-ng-0.2.1-pre12/etc/rc.wlan	2003-09-24 22:27:25.000000000 +0200
+@@ -1,96 +1,94 @@
+ #!/bin/sh
+-
+-# rc.wlan 
+ #
+-# chkconfig: 2345 9 91 
+-# description: Activates/Configures/Disables the devices
+-
++# wlan     wlan 
++#
++# chkconfig:    2345  9 91
++#
++# description:  wlan
++#
+ if [ ! -f /etc/wlan/shared ] ; then
+-    echo "/etc/wlan/shared not present"
+-    exit 0
++    	echo "/etc/wlan/shared not present"
++    	exit 0
+ fi
+-
+ . /etc/wlan/shared
+ 
+-if [ -f /etc/init.d/functions ] ; then
+-	. /etc/init.d/functions
+-fi
++# Source function library
++. /etc/rc.d/init.d/functions
+ 
+-usage()
+-{
+-    echo "Usage: $0 {start|stop|status|restart|reload|force-reload}"
+-}
+-
+-
+-if [ $# -lt 1 ] ; then usage ; exit 1 ; fi
+-action=$1
+-
+-case "$action" in
+-
+-start)
+-	# This will implicitly fire off wland via hotplug.
+-	echo -n "Starting WLAN Devices: "
+-	if ! $MODPROBE p80211; then
+-		echo "Failed to load p80211.o."
+-		exit 1
+-	fi
+-
+-	# NOTE: We don't explicitly insmod the card driver here.  The
+-	#  best thing to do is to specify an alias in /etc/modules.conf.
+-
+-	for DEVICE in $WLAN_DEVICES; do
+-	    $MODPROBE $DEVICE
+-	    # if we don't have hotplug.. do things the old-fashioned way.
+-	    if [ $HAS_HOTPLUG = 'n' ] ; then
+-		wlan_bring_it_up $DEVICE
+-	    fi
+-	done
++# Get network config
++. /etc/sysconfig/network
+ 
+-	# And hotplug will take care of the rest, namely device 
+-	# initialization and whatnot.
++# Set defaults
+ 
+-        if [ -f /etc/init.d/functions ] ; then
+-                echo_success
++# Get service config - may override defaults
++[ -f /etc/sysconfig/wlan ] && . /etc/sysconfig/wlan
++
++# Check that networking is up.
++if is_yes "${NETWORKING}"; then
++	true
++else
++        exit 0
++fi
++case "$1" in
++  start)
++	set -v
++  	set -x
++        # Check if the service is already running?
++        if [ ! -f /var/lock/subsys/wlan ]; then
++                # show "Starting %s service" wlan
++#                msg_starting wlan
++       		for DEV in $WLAN_DEVICES; do
++		        result=`$WLANCTL $DEV lnxreq_ifstate ifstate=enable`
++		        if [ $? = 0 ] ; then
++	                	eval $result
++        		        if [ $resultcode != "success" ]; then
++                        		${ECHO} "Failed to enable the "\
++						"device, resultcode=" \
++		                                $resultcode "."
++        		                return 1
++                		fi
++		        else
++		                ${ECHO} "Failed to enable the device, "\
++					"exitcode=" $? "."
++                		return 1
++		        fi
++			wlan_scan_and_join $DEV
++		done
++                RETVAL=$?
++                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/wlan
+         else
+-                echo
++                # show "%s service is already running." wlan
++#                msg_already_running wlan
++                exit 1
+         fi
+-
+-	;;
+-
+-stop)
+-	echo -n "Shutting Down WLAN Devices: "
+-	echo -n "Shutting Down WLAN Devices: "
+-	# Do a reset on each device to make sure none of them are still
+-	#  trying to generate interrupts.
+-	for DEVICE in $WLAN_DEVICES; do
+-		wlan_disable $DEVICE
+-		ifconfig $DEVICE down
+-		$MODPROBE -r $DEVICE
+-	done
+-	
+-	# remove p80211, which will implictly kill wland.
+-	$MODPROBE -r p80211
+-
+-        if [ -f /etc/init.d/functions ] ; then
+-                echo_success
++        ;;
++  stop)
++        # Stop daemons.
++        # show "Stopping %s service" wlan
++        if [ -f /var/lock/subsys/wlan ]; then
++                msg_stopping wlan
++        	for DEVICE in $WLAN_DEVICES; do
++			wlan_disable $DEVICE
++		done
++                RETVAL=$?
++                rm -f /var/lock/subsys/wlan
+         else
+-                echo
++                # show "%s service is not running." wlan
++                msg_not_running wlan
++                exit 1
+         fi
+-	;;
+-
+-status)
+-	status wland
+-	;;
+-
+-restart|reload|force-reload)
+-	$0 stop
+-	$0 start
+-	EXITCODE=$?
+-	;;
+-
+-    *)
+-	usage
+-	;;
+-
++        ;;
++  restart)
++        $0 stop
++        $0 start
++        ;;
++  status)
++        status wlan
++        RETVAL=$?
++        ;;
++  *)
++        # show "Usage: %s {start|stop|status|restart|reload|force-reload}" $0
++        msg_usage "$0 {start|stop|status|restart}"
++        exit 1
+ esac
+ 

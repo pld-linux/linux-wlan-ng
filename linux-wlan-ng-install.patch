@@ -1,0 +1,61 @@
+diff -Naur linux-wlan-ng-0.2.1-pre12.orig/man/Makefile linux-wlan-ng-0.2.1-pre12/man/Makefile
+--- linux-wlan-ng-0.2.1-pre12.orig/man/Makefile	2003-09-24 18:31:45.000000000 +0200
++++ linux-wlan-ng-0.2.1-pre12/man/Makefile	2003-09-24 18:32:10.000000000 +0200
+@@ -48,9 +48,9 @@
+ 	@echo "Nothing to do..."
+ 
+ install:
+-	mkdir -p $(TARGET_ROOT_ON_HOST)/usr/local/man/man1
++	mkdir -p $(TARGET_ROOT_ON_HOST)/usr/share/man/man1
+ 	cp nwepgen.man wlancfg.man wlanctl-ng.man wland.man \
+-	$(TARGET_ROOT_ON_HOST)/usr/local/man/man1
++	$(TARGET_ROOT_ON_HOST)/usr/share/man/man1
+ 
+ clean:
+ 	rm -f core core.* *.o .*.o *.s *.a .depend tmp_make *~ tags
+diff -Naur linux-wlan-ng-0.2.1-pre12.orig/src/p80211/Makefile linux-wlan-ng-0.2.1-pre12/src/p80211/Makefile
+--- linux-wlan-ng-0.2.1-pre12.orig/src/p80211/Makefile	2003-09-24 18:31:45.000000000 +0200
++++ linux-wlan-ng-0.2.1-pre12/src/p80211/Makefile	2003-09-24 18:32:10.000000000 +0200
+@@ -137,8 +137,8 @@
+ 	chmod -x $@
+ 
+ install : $(MODULES)
+-	mkdir -p $(TARGET_MODDIR)/net
+-	cp $(P80211_MODULE) $(TARGET_MODDIR)/net
++	mkdir -p $(TARGET_MODDIR)/kernel/drivers/net
++	cp $(P80211_MODULE) $(TARGET_MODDIR)/kernel/drivers/net
+ 
+ clean: 
+ 	rm -f core core.* *.o .*.o *.s *.a .depend tmp_make *~ tags
+diff -Naur linux-wlan-ng-0.2.1-pre12.orig/src/prism2/driver/Makefile linux-wlan-ng-0.2.1-pre12/src/prism2/driver/Makefile
+--- linux-wlan-ng-0.2.1-pre12.orig/src/prism2/driver/Makefile	2003-09-24 18:31:45.000000000 +0200
++++ linux-wlan-ng-0.2.1-pre12/src/prism2/driver/Makefile	2003-09-24 18:33:08.000000000 +0200
+@@ -151,20 +151,20 @@
+ 		rm -rf $(TARGET_MODDIR)/kernel/3rdparty/prism* ;\
+ 	fi
+ ifeq ($(PRISM2_PCMCIA), y)
+-	mkdir -p $(TARGET_MODDIR)/pcmcia
+-	cp -f $(CS_MODULE) $(TARGET_MODDIR)/pcmcia 
++	mkdir -p $(TARGET_MODDIR)/kernel/drivers/pcmcia
++	cp -f $(CS_MODULE) $(TARGET_MODDIR)/kernel/drivers/pcmcia 
+ endif
+ ifeq ($(PRISM2_PCI), y)
+-	mkdir -p $(TARGET_MODDIR)/net
+-	cp -f $(PCI_MODULE) $(TARGET_MODDIR)/net 
++	mkdir -p $(TARGET_MODDIR)/kernel/drivers/net
++	cp -f $(PCI_MODULE) $(TARGET_MODDIR)/kernel/drivers/net 
+ endif
+ ifeq ($(PRISM2_PLX), y)
+-	mkdir -p $(TARGET_MODDIR)/net
+-	cp -f $(PLX_MODULE) $(TARGET_MODDIR)/net 
++	mkdir -p $(TARGET_MODDIR)/kernel/drivers/net
++	cp -f $(PLX_MODULE) $(TARGET_MODDIR)/kernel/drivers/net 
+ endif
+ ifeq ($(PRISM2_USB), y)
+-	mkdir -p $(TARGET_MODDIR)/usb
+-	cp -f $(USB_MODULE) $(TARGET_MODDIR)/usb 
++	mkdir -p $(TARGET_MODDIR)/kernel/drivers/usb
++	cp -f $(USB_MODULE) $(TARGET_MODDIR)/kernel/drivers/usb 
+ endif
+ 
+ clean: 

@@ -1,0 +1,18 @@
+diff -Naur linux-wlan-ng-0.2.1-pre12.orig/Configure linux-wlan-ng-0.2.1-pre12/Configure
+--- linux-wlan-ng-0.2.1-pre12.orig/Configure	2003-09-24 15:54:50.000000000 +0200
++++ linux-wlan-ng-0.2.1-pre12/Configure	2003-09-24 15:55:36.000000000 +0200
+@@ -409,10 +409,10 @@
+ if [ $PRISM2_PCMCIA = "y" ] ; then
+ 	# Should we build for Kernel based PCMCIA?
+ 	WLAN_KERN_PCMCIA=y
+-	grep 'define CONFIG_PCMCIA' < $LINUX_SRC/include/linux/autoconf.h > /dev/null
+-	if [ $? = 1 ] ; then
+-	    WLAN_KERN_PCMCIA=n
+-	fi
++#	grep 'define CONFIG_PCMCIA' < $LINUX_SRC/include/linux/autoconf.h > /dev/null
++#	if [ $? = 1 ] ; then
++#	    WLAN_KERN_PCMCIA=n
++#	fi
+ 	write_bool WLAN_KERN_PCMCIA
+ 
+ 	# We only need the pcmcia source directory if we're NOT building for
