@@ -13,19 +13,19 @@ ExcludeArch:	sparc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-The pcmcia-cs package adds new generation microwave wirelless PCMCIA networks 
-cards handling support for your PLD-Linux system.
+The pcmcia-cs package adds new generation microwave wirelless PCMCIA
+networks cards handling support for your PLD-Linux system.
 
 %description -l pl
-Pakiet pcmcia-cs zawiera programy wspieraj±ce obs³ugê mikrofalowych nowej
-generacji kart sieciowych PCMCIA w Twoim PLD-Linuksie.
+Pakiet pcmcia-cs zawiera programy wspieraj±ce obs³ugê mikrofalowych
+nowej generacji kart sieciowych PCMCIA w Twoim PLD-Linuksie.
 
 %prep
 %setup -q
 #%patch0 -p0
 
 %build
-%{__make} all 
+%{__make} all
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -40,7 +40,7 @@ mv -f $RPM_BUILD_ROOT%{_sysconfdir}/pcmcia/wlan.config /$RPM_BUILD_ROOT%{_syscon
 
 gzip -9nf SUPPORTED.CARDS CHANGES COPYING README \
 	FAQ.isa README.debug README.isa README.linuxppc \
-	README.wep TODO THANKS 
+	README.wep TODO THANKS
 
 %clean
 rm -rf $RPM_BUILD_ROOT
