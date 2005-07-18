@@ -22,11 +22,13 @@ Group:		Applications/System
 Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}-%{_pre}.tar.bz2
 # Source0-md5:	fff64e543e094b2007d614697f505344
 Patch0:		%{name}-Makefile.patch
-Patch1:		%{name}-pcmcia.patch
+Patch1:		%{name}-configure.patch
 Patch2:		%{name}-init.patch
 Patch3:		%{name}-wland.patch
+%if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.153
+BuildRequires:	rpmbuild(macros) >= 1.217
+%endif
 Requires(post,preun):	/sbin/chkconfig
 URL:		http://www.linux-wlan.com/
 ExcludeArch:	sparc sparc64
@@ -62,8 +64,11 @@ Summary:	Drivers for wireless microwave network cards
 Summary(pl):	Sterowniki mikrofalowych kart sieciowych
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Applications/System
-%{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
+%if %{with dist_kernel}
+%requires_releq_kernel_up
+Requires(postun):	%releq_kernel_up
+%endif
 
 %description -n kernel-net-wlan-ng
 Drivers for microwave wirelless network cards.
@@ -77,10 +82,11 @@ Summary:	Drivers for wireless microwave network cards
 Summary(pl):	Sterowniki mikrofalowych kart sieciowych
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Applications/System
-%{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
-Provides:	kernel-net-wlan-ng
-Obsoletes:	kernel-net-wlan-ng
+%if %{with dist_kernel}
+%requires_releq_kernel_smp
+Requires(postun):	%releq_kernel_smp
+%endif
 
 %description -n kernel-smp-net-wlan-ng
 Drivers for microwave wirelless network cards.
@@ -94,8 +100,11 @@ Summary:	Drivers for PCMCIA wireless microwave network cards
 Summary(pl):	Sterowniki mikrofalowych kart sieciowych PCMCIA
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Applications/System
-%{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
+%if %{with dist_kernel}
+%requires_releq_kernel_up
+Requires(postun):	%releq_kernel_up
+%endif
 
 %description -n kernel-net-wlan-ng-pcmcia
 Drivers for microwave wirelless PCMCIA network cards.
@@ -109,10 +118,11 @@ Summary:	Drivers for PCMCIA wireless microwave network cards
 Summary(pl):	Sterowniki mikrofalowych kart sieciowych PCMCIA
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Applications/System
-%{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
-Provides:	kernel-net-wlan-ng-pcmcia
-Obsoletes:	kernel-net-wlan-ng-pcmcia
+%if %{with dist_kernel}
+%requires_releq_kernel_smp
+Requires(postun):	%releq_kernel_smp
+%endif%{?with_dist_kernel:%requires_releq_kernel_smp}
 
 %description -n kernel-smp-net-wlan-ng-pcmcia
 Drivers for microwave wirelless PCMCIA network cards.
@@ -123,8 +133,8 @@ sieciowych PCMCIA.
 
 %prep
 %setup -q -n %{name}-%{version}-%{_pre}
-#%patch0 -p1
-%patch1 -p1
+%patch0 -p1
+%patch1 -p0
 %patch2 -p1
 %patch3 -p1
 
@@ -145,9 +155,10 @@ rm -rf built*
 mkdir -p built-{smp,up,nondist}
 w=$PWD
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
-    if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
-	exit 1
-    fi
+	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
+		exit 1
+	fi
+	
 	cd p80211
 	ln -sf ../include/wlan wlan
 	cd ../prism2
@@ -156,22 +167,23 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	ln -sf ../../include/wlan wlan
 	ln -sf ../include/prism2 prism2
 	cd ../..
-    for d in p80211 prism2/driver; do
-	cd $w/$d
-	rm -rf include
-	install -d include/{config,linux}
-	ln -sf %{_kernelsrcdir}/config-$cfg .config
-	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
-	ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
-	touch include/config/MARKER
-	%{__make} -C %{_kernelsrcdir} clean modules \
-	    WLAN_SRC="$PWD/" \
-	    RCS_FIND_IGNORE="-name '*.ko' -o" \
-	    M=$PWD O=$PWD \
-	    %{?with_verbose:V=1}
-	mv *.ko $w/built-$cfg
-	cd ../..
-    done
+
+	for d in p80211 prism2/driver; do
+		cd $w/$d
+		rm -rf include
+		install -d include/{config,linux}
+		ln -sf %{_kernelsrcdir}/config-$cfg .config
+		ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
+		ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
+		touch include/config/MARKER
+		%{__make} -C %{_kernelsrcdir} clean modules \
+		    WLAN_SRC="$PWD/" \
+		    RCS_FIND_IGNORE="-name '*.ko' -o" \
+		    M=$PWD O=$PWD \
+		    %{?with_verbose:V=1}
+		mv *.ko $w/built-$cfg
+		cd ../..
+	done
 done
 cd $w
 %endif
@@ -190,7 +202,6 @@ install built-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}/*.ko \
 install built-smp/*.ko \
 	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/kernel/drivers/net/wireless
 %endif
-cd -
 %endif
 
 %clean
