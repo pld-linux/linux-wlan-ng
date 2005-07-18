@@ -1,0 +1,113 @@
+--- Configure.orig	2005-01-25 02:41:44.000000000 +0100
++++ Configure	2005-07-18 21:31:10.455040472 +0200
+@@ -223,28 +223,10 @@
+ #=======================================================================
+ # Collect the kernel source tree and test for sanity
+ 
+-CUR_RELEASE=`uname -r`
+-
+-if [ "$LINUX_SRC" = "" ] ; then
+-    LINUX_SRC=/lib/modules/$CUR_RELEASE/build
+-fi
++LINUX_SRC=/usr/src/linux
+ 
+ ask_str "Linux source directory" LINUX_SRC
+ 
+-if [ ! -f $LINUX_SRC/include/linux/version.h ] ; then
+-	$ECHO "Linux source tree $LINUX_SRC is incomplete or missing!"
+-	if [ -d $LINUX_SRC/include/linux ] ; then
+-	$ECHO "    The kernel header files are present, but not " \
+-		"the full source code."
+-	fi
+-	$ECHO "    See the HOWTO for a list of FTP sites for current" \
+-	 "kernel sources."
+-	fail
+-fi
+-
+-KERNEL_SOURCE=$LINUX_SRC make -Cscripts 2>&1 > /dev/null
+-. scripts/make.opts
+-
+ # What kernel are we compiling for?
+ 
+ version () {
+@@ -253,38 +235,15 @@
+ 
+ $ECHO ""
+ 
+-SRC_RELEASE="$KERNEL_RELEASE"
+-
+ VERSION_CODE=`grep LINUX_VERSION_CODE $LINUX_SRC/include/linux/version.h | \
+     sed -e 's/[^0-9]//g'`
+ 
+-$ECHO "The kernel source tree is version $SRC_RELEASE."
+-if [ $VERSION_CODE -lt `version 2 2 0` ] ; then
+-	$ECHO "This package requires at least a 2.2.x series kernel."
+-	fail
+-fi
+-
+ if [ $VERSION_CODE -gt `version 2 5 0` ] ; then
+ 	$ECHO "Kernel 2.5/2.6 support is highly experimental."
+         KERN_25=y
+         write_bool KERN_25
+ fi
+ 
+-if [ "$SRC_RELEASE" != "$CUR_RELEASE" ] ; then
+-	$ECHO "WARNING: the current running kernel is actually version $CUR_RELEASE."
+-fi
+-
+-if [ ! -f $LINUX_SRC/.config ] ; then
+-    $ECHO "WARNING: .config not present in kernel source tree.  This will"
+-    $ECHO "         screw up modversions detection and build optimizations."
+-    $ECHO "         Is this a RedHat kernel? Workarounds enabled." 
+-    if [ -f $LINUX_SRC/include/linux/modversions.h ] ; then
+-	KERNEL_MODFLAGS="-DMODULE -DMODVERSIONS -include $LINUX_SRC/include/linux/modversions.h"
+-    fi
+-    $ECHO "         For an optimized build, copy over the relevent file from"
+-    $ECHO "         $LINUX_SRC/configs/ to $LINUX_SRC/.config"
+-fi
+-
+ # Check for consistent kernel build dates
+ 
+ CUR_D=`uname -v | sed -e 's/^#[0-9]* //;s/SMP //'`
+@@ -296,12 +255,6 @@
+ 	sed -e 's/.*"\(.*\)"/\1/'`
+ 	SRC_D=`$ECHO $UTS_VERSION | sed -e 's/^#[0-9]* //;s/SMP //'`
+ 	SRC_D=`$ECHO $SRC_D | sed -e 's/\(:[0-9][0-9]\) .* \([12][90]\)/\1 \2/'`
+-	if [ $SRC_RELEASE = $CUR_RELEASE -a "$SRC_D" != "$CUR_D" ] ; then
+-	$ECHO "WARNING: the source tree has a build date of $SRC_D."
+-	if [ `date -d "$SRC_D" +%s` -gt `date -d "$CUR_D" +%s` ] ; then
+-		$ECHO "   Did you forget to install your new kernel?!?"
+-	fi
+-	fi
+ fi
+ $ECHO ""
+ 
+@@ -334,24 +287,16 @@
+ # test to see if __KERNEL__ is defined in KERNEL_CFLAGS
+ # if not, $KERNEL_CFLAGS += __KERNEL__
+ 
+-	grep __KERNEL__ < scripts/make.opts > /dev/null
+-	if [ $? = 1 ] ; then
+-	    KERNEL_CFLAGS="-D__KERNEL__ -I$LINUX_SRC/include $KERNEL_CFLAGS"
+-	fi
+-
+-	dump_str "KERNEL_CFLAGS=$KERNEL_CFLAGS"
+-	dump_str "KERNEL_MODFLAGS=$KERNEL_MODFLAGS"
+-
+ #=======================================================================
+ # If compiling for pcmcia-cs, find the PCMCIA source tree
+ 
+ if [ $PRISM2_PCMCIA = "y" ] ; then
+ 	# Should we build for Kernel based PCMCIA?
+ 	WLAN_KERN_PCMCIA=y
+-	grep 'define CONFIG_PCMCIA' < $LINUX_SRC/include/linux/autoconf.h > /dev/null
+-	if [ $? = 1 ] ; then
+-	    WLAN_KERN_PCMCIA=n
+-	fi
++#	grep 'define CONFIG_PCMCIA' < $LINUX_SRC/include/linux/autoconf.h > /dev/null
++#	if [ $? = 1 ] ; then
++#	    WLAN_KERN_PCMCIA=n
++#	fi
+ 	write_bool WLAN_KERN_PCMCIA
+ 
+ 	# We only need the pcmcia source directory if we're NOT building for
