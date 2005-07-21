@@ -25,12 +25,12 @@ Patch0:		%{name}-Makefile.patch
 Patch1:		%{name}-configure.patch
 Patch2:		%{name}-init.patch
 Patch3:		%{name}-wland.patch
+URL:		http://www.linux-wlan.com/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.217
 %endif
 Requires(post,preun):	/sbin/chkconfig
-URL:		http://www.linux-wlan.com/
 ExcludeArch:	sparc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -49,7 +49,7 @@ Summary:	PCMCIA wireless microwave network card services - new generation 11Mbit
 Summary(pl):	Obs³uga mikrofalowych kart sieciowych PCMCIA - nowa generacja 11Mbit
 Release:	%{_rel}
 Group:		Applications/System
-Prereq:		pcmcia-cs
+PreReq:		pcmcia-cs
 
 %description pcmcia
 The linux-wlan-ng-pcmcia package adds new generation microwave
@@ -122,7 +122,7 @@ Requires(post,postun):	/sbin/depmod
 %if %{with dist_kernel}
 %requires_releq_kernel_smp
 Requires(postun):	%releq_kernel_smp
-%endif%{?with_dist_kernel:%requires_releq_kernel_smp}
+%endif
 
 %description -n kernel-smp-net-wlan-ng-pcmcia
 Drivers for microwave wirelless PCMCIA network cards.
