@@ -29,6 +29,7 @@ URL:		http://www.linux-wlan.com/
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.217
 %endif
+BuildRequires:	sed >= 4.0
 Requires(post,preun):	/sbin/chkconfig
 ExcludeArch:	sparc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -131,7 +132,7 @@ Pakiet zawiera sterowniki nowej generacji dla mikrofalowych kart
 sieciowych PCMCIA.
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q
 %patch0 -p1
 #%patch1 -p0
 %patch2 -p1
