@@ -14,7 +14,8 @@ Summary(pl):	Obs³uga mikrofalowych kart sieciowych - nowa generacja 11Mbit
 Name:		linux-wlan-ng
 Epoch:		1
 Version:	0.2.3
-Release:	0.1
+%define		_rel	0.1
+Release:	%{_rel}
 License:	MPL
 Group:		Applications/System
 Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}.tar.bz2
