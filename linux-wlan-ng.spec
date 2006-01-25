@@ -13,14 +13,12 @@ Summary:	Wireless microwave network card services - new generation 11Mbit
 Summary(pl):	Obs³uga mikrofalowych kart sieciowych - nowa generacja 11Mbit
 Name:		linux-wlan-ng
 Epoch:		1
-Version:	0.2.1
-%define		_pre	pre26
-%define		_rel	0.%{_pre}.1
-Release:	%{_rel}
+Version:	0.2.3
+Release:	0.1
 License:	MPL
 Group:		Applications/System
-Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}-%{_pre}.tar.bz2
-# Source0-md5:	fff64e543e094b2007d614697f505344
+Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}.tar.bz2
+# Source0-md5:	f26e41336a2838d69a366ab3a2d93ea0
 Patch0:		%{name}-Makefile.patch
 Patch1:		%{name}-configure.patch
 Patch2:		%{name}-init.patch
@@ -132,9 +130,9 @@ Pakiet zawiera sterowniki nowej generacji dla mikrofalowych kart
 sieciowych PCMCIA.
 
 %prep
-%setup -q -n %{name}-%{version}-%{_pre}
+%setup -q -n %{name}-%{version}
 %patch0 -p1
-%patch1 -p0
+#%patch1 -p0
 %patch2 -p1
 %patch3 -p1
 
