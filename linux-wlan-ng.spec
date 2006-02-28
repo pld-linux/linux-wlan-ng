@@ -13,8 +13,8 @@ Summary:	Wireless microwave network card services - new generation 11Mbit
 Summary(pl):	Obs³uga mikrofalowych kart sieciowych - nowa generacja 11Mbit
 Name:		linux-wlan-ng
 Epoch:		1
-Version:	0.2.3
 %define		_rel	0.1
+Version:	0.2.3
 Release:	%{_rel}
 License:	MPL
 Group:		Applications/System
@@ -49,7 +49,7 @@ Summary:	PCMCIA wireless microwave network card services - new generation 11Mbit
 Summary(pl):	Obs³uga mikrofalowych kart sieciowych PCMCIA - nowa generacja 11Mbit
 Release:	%{_rel}
 Group:		Applications/System
-PreReq:		pcmcia-cs
+Requires:	pcmcia-cs
 
 %description pcmcia
 The linux-wlan-ng-pcmcia package adds new generation microwave
@@ -140,7 +140,7 @@ sieciowych PCMCIA.
 
 %build
 sed -i "s#PCMCIA_SRC=.*#PCMCIA_SRC=%{_kernelsrcdir}#g; s#PRISM2_\([^=]*\)=[yn]#PRISM2_\1=y#; s#TARGET_ROOT_ON_HOST=#TARGET_ROOT_ON_HOST=$RPM_BUILD_ROOT#" config.in
-make auto_config
+%{__make} auto_config
 cd src
 ln -sf ../config.mk config.mk
 cd prism2
@@ -158,7 +158,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 		exit 1
 	fi
-	
+
 	cd p80211
 	ln -sf ../include/wlan wlan
 	cd ../prism2
