@@ -9,13 +9,13 @@
 # TODO:
 #	- check %%desc, R:, BR:, cflags
 #
+%define		_rel	0.1
 Summary:	Wireless microwave network card services - new generation 11Mbit
 Summary(pl):	Obs³uga mikrofalowych kart sieciowych - nowa generacja 11Mbit
 Name:		linux-wlan-ng
-Epoch:		1
-%define		_rel	0.1
 Version:	0.2.3
 Release:	%{_rel}
+Epoch:		1
 License:	MPL
 Group:		Applications/System
 Source0:	ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/%{name}-%{version}.tar.bz2
@@ -26,7 +26,7 @@ Patch2:		%{name}-init.patch
 Patch3:		%{name}-wland.patch
 URL:		http://www.linux-wlan.com/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.217
 %endif
 BuildRequires:	sed >= 4.0
@@ -178,10 +178,10 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 		ln -sf %{_kernelsrcdir}/Module.symvers-$cfg Module.symvers
 		touch include/config/MARKER
 		%{__make} -C %{_kernelsrcdir} clean modules \
-		    WLAN_SRC="$PWD/" \
-		    RCS_FIND_IGNORE="-name '*.ko' -o" \
-		    M=$PWD O=$PWD \
-		    %{?with_verbose:V=1}
+			WLAN_SRC="$PWD/" \
+			RCS_FIND_IGNORE="-name '*.ko' -o" \
+			M=$PWD O=$PWD \
+			%{?with_verbose:V=1}
 		mv *.ko $w/built-$cfg
 		cd ../..
 	done
