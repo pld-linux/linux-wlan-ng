@@ -178,7 +178,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 		ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
 %if %{with dist_kernel}
 	%{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
-%else   
+%else
 	install -d o/include/config
 	touch o/include/config/MARKER
 	ln -sf %{_kernelsrcdir}/scripts o/scripts
@@ -233,9 +233,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %preun
 if [ "$1" = "0" ]; then
-	%service -q wlan stop
+	%service wlan stop
 	/sbin/chkconfig --del wlan
-fi 
+fi
 
 %post pcmcia
 %service pcmcia restart
