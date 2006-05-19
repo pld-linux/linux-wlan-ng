@@ -27,7 +27,7 @@ Patch3:		%{name}-wland.patch
 URL:		http://www.linux-wlan.com/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.217
+BuildRequires:	rpmbuild(macros) >= 1.268
 %endif
 BuildRequires:	sed >= 4.0
 Requires(post,preun):	/sbin/chkconfig
