@@ -134,13 +134,14 @@ sieciowych PCMCIA.
 %prep
 %setup -q
 %patch0 -p1
-#%patch1 -p0
+%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 
 %build
 sed -i "s#PCMCIA_SRC=.*#PCMCIA_SRC=%{_kernelsrcdir}#g; s#PRISM2_\([^=]*\)=[yn]#PRISM2_\1=y#; s#TARGET_ROOT_ON_HOST=#TARGET_ROOT_ON_HOST=$RPM_BUILD_ROOT#" config.in
-%{__make} auto_config
+%{__make} auto_config \
+	LINUX_SRC=%{_kernelsrcdir}
 cd src
 ln -sf ../config.mk config.mk
 cd prism2
@@ -170,18 +171,33 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 
 	for d in p80211 prism2/driver; do
 		cd $w/$d
-		rm -rf include
-		install -d include/{config,linux}
-		ln -sf %{_kernelsrcdir}/config-$cfg .config
-		ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
-		ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
-		ln -sf %{_kernelsrcdir}/Module.symvers-$cfg Module.symvers
-		touch include/config/MARKER
-		%{__make} -C %{_kernelsrcdir} clean modules \
+		rm -rf o
+		install -d o/include/linux
+		ln -sf %{_kernelsrcdir}/config-$cfg o/.config
+		ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
+		ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
+%if %{with dist_kernel}
+	%{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
+%else   
+	install -d o/include/config
+	touch o/include/config/MARKER
+	ln -sf %{_kernelsrcdir}/scripts o/scripts
+%endif
+		%{__make} -C %{_kernelsrcdir} clean \
 			WLAN_SRC="$PWD/" \
 			RCS_FIND_IGNORE="-name '*.ko' -o" \
-			M=$PWD O=$PWD \
+			SYSSRC=%{_kernelsrcdir} \
+			SYSOUT=$PWD/o \
+			M=$PWD O=$PWD/o \
 			%{?with_verbose:V=1}
+		%{__make} -C %{_kernelsrcdir} modules \
+			CC="%{__cc}" CPP="%{__cpp}" \
+			WLAN_SRC="$PWD/" \
+			SYSSRC=%{_kernelsrcdir} \
+			SYSOUT=$PWD/o \
+			M=$PWD O=$PWD/o \
+			%{?with_verbose:V=1}
+
 		mv *.ko $w/built-$cfg
 		cd ../..
 	done
@@ -192,7 +208,10 @@ cd $w
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{?with_userspace:%{__make} install}
+%if %{with userspace}
+%{__make} install
+install -D etc/rc.wlan $RPM_BUILD_ROOT/etc/rc.d/init.d/wlan
+%endif
 
 %if %{with kernel}
 cd src
@@ -209,31 +228,21 @@ install built-smp/*.ko \
 rm -rf $RPM_BUILD_ROOT
 
 %post
-if [ -f /var/lock/subsys/wlan ]; then
-	/etc/rc.d/init.d/wlan restart 2> /dev/null
-else
-	echo "Tape \"/etc/rc.d/init.d/wlan start to start wland daemon."
-fi
 /sbin/chkconfig --add wlan
+%service wlan restart
 
 %preun
-if [ -f /var/lock/subsys/wlan ]; then
-	/etc/rc.d/init.d/wlan stop 2> /dev/null
-fi
-/sbin/chkconfig --del wlan
+if [ "$1" = "0" ]; then
+	%service -q wlan stop
+	/sbin/chkconfig --del wlan
+fi 
 
 %post pcmcia
-if [ -f /var/lock/subsys/pcmcia ]; then
-	/etc/rc.d/init.d/pcmcia restart 2> /dev/null
-else
-	echo "Run \"/rc.d/init.d/pcmcia start\" to start pcmcia cardbus daemon."
-fi
+%service pcmcia restart
 
 %postun pcmcia
 if [ "$1" = "0" ]; then
-	if [ -f /var/state/run/pcmcia ]; then
-		/etc/rc.d/init.d/pcmcia restart 2> /dev/null
-	fi
+	%service pcmcia restart
 fi
 
 %post -n kernel-net-wlan-ng
