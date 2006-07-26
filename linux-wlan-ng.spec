@@ -276,11 +276,11 @@ fi
 %attr(755,root,root) %{_sbindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/*
 %{_mandir}/man1/*
-%attr(644,root,root) %{_sysconfdir}/wlan/*
+%{_sysconfdir}/wlan/*
 
 %files pcmcia
 %defattr(644,root,root,755)
-%attr(644,root,root) %{_sysconfdir}/pcmcia/*
+%{_sysconfdir}/pcmcia/*
 %endif
 
 %if %{with kernel}
