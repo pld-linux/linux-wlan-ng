@@ -1,5 +1,5 @@
---- linux-wlan-ng-0.2.3/Configure	2005-01-25 02:41:44.000000000 +0100
-+++ linux-wlan-ng-0.2.3/Configure	2005-07-18 21:31:10.455040472 +0200
+--- linux-wlan-ng-0.2.7/Configure.orig	2007-01-11 17:59:55.000000000 +0100
++++ linux-wlan-ng-0.2.7/Configure	2007-01-19 01:25:56.000000000 +0100
 @@ -223,28 +223,10 @@
  #=======================================================================
  # Collect the kernel source tree and test for sanity
@@ -30,7 +30,7 @@
  # What kernel are we compiling for?
  
  version () {
-@@ -253,38 +235,15 @@
+@@ -253,17 +235,9 @@
  
  $ECHO ""
  
@@ -46,10 +46,11 @@
 -fi
 -
  if [ $VERSION_CODE -gt `version 2 5 0` ] ; then
- 	$ECHO "Kernel 2.5/2.6 support is highly experimental."
          KERN_25=y
          write_bool KERN_25
+@@ -277,21 +251,6 @@
  fi
+ write_bool KERN_2_6_17
  
 -if [ "$SRC_RELEASE" != "$CUR_RELEASE" ] ; then
 -	$ECHO "WARNING: the current running kernel is actually version $CUR_RELEASE."
@@ -67,11 +68,11 @@
 -fi
 -
  # Check for consistent kernel build dates
- 
- CUR_D=`uname -v | sed -e 's/^#[0-9]* //;s/SMP //'`
-@@ -296,12 +255,6 @@
+ CUR_D=`uname -v | sed -e 's/^#[0-9]* //;s/SMP //;s/PREEMPT //;'`
+ CUR_D=`$ECHO $CUR_D | sed -e 's/\(:[0-9][0-9]\) .* \([12][90]\)/\1 \2/'`
+@@ -302,12 +261,6 @@
  	sed -e 's/.*"\(.*\)"/\1/'`
- 	SRC_D=`$ECHO $UTS_VERSION | sed -e 's/^#[0-9]* //;s/SMP //'`
+ 	SRC_D=`$ECHO $UTS_VERSION | sed -e 's/^#[0-9]* //;s/SMP //;s/PREEMPT //;'`
  	SRC_D=`$ECHO $SRC_D | sed -e 's/\(:[0-9][0-9]\) .* \([12][90]\)/\1 \2/'`
 -	if [ $SRC_RELEASE = $CUR_RELEASE -a "$SRC_D" != "$CUR_D" ] ; then
 -	$ECHO "WARNING: the source tree has a build date of $SRC_D."
@@ -82,7 +83,7 @@
  fi
  $ECHO ""
  
-@@ -334,24 +287,16 @@
+@@ -340,24 +293,16 @@
  # test to see if __KERNEL__ is defined in KERNEL_CFLAGS
  # if not, $KERNEL_CFLAGS += __KERNEL__
  
