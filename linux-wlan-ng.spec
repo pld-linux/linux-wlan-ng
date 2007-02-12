@@ -11,7 +11,7 @@
 #
 %define		_rel	0.1
 Summary:	Wireless microwave network card services - new generation 11Mbit
-Summary(pl):	Obs³uga mikrofalowych kart sieciowych - nowa generacja 11Mbit
+Summary(pl.UTF-8):   ObsÅ‚uga mikrofalowych kart sieciowych - nowa generacja 11Mbit
 Name:		linux-wlan-ng
 Version:	0.2.7
 Release:	%{_rel}
@@ -39,13 +39,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 The linux-wlan-ng package adds new generation microwave wirelless
 networks cards dirvers for your PLD-Linux system.
 
-%description -l pl
-Pakiet linux-wlan-ng zawiera programy wspieraj±ce obs³ugê
+%description -l pl.UTF-8
+Pakiet linux-wlan-ng zawiera programy wspierajÄ…ce obsÅ‚ugÄ™
 mikrofalowych kart sieciowych.
 
 %package pcmcia
 Summary:	PCMCIA wireless microwave network card services - new generation 11Mbit
-Summary(pl):	Obs³uga mikrofalowych kart sieciowych PCMCIA - nowa generacja 11Mbit
+Summary(pl.UTF-8):   ObsÅ‚uga mikrofalowych kart sieciowych PCMCIA - nowa generacja 11Mbit
 Release:	%{_rel}
 Group:		Applications/System
 Requires:	pcmcia-cs
@@ -54,13 +54,13 @@ Requires:	pcmcia-cs
 The linux-wlan-ng-pcmcia package adds new generation microwave
 wirelless PCMCIA networks cards dirvers for your PLD-Linux system.
 
-%description pcmcia -l pl
-Pakiet linux-wlan-ng-pcmcia zawiera programy wspieraj±ce obs³ugê
+%description pcmcia -l pl.UTF-8
+Pakiet linux-wlan-ng-pcmcia zawiera programy wspierajÄ…ce obsÅ‚ugÄ™
 mikrofalowych kart sieciowych PCMCIA.
 
 %package -n kernel-net-wlan-ng
 Summary:	Drivers for wireless microwave network cards
-Summary(pl):	Sterowniki mikrofalowych kart sieciowych
+Summary(pl.UTF-8):   Sterowniki mikrofalowych kart sieciowych
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Applications/System
 Requires(post,postun):	/sbin/depmod
@@ -72,13 +72,13 @@ Requires(postun):	%releq_kernel_up
 %description -n kernel-net-wlan-ng
 Drivers for microwave wirelless network cards.
 
-%description -n kernel-net-wlan-ng -l pl
+%description -n kernel-net-wlan-ng -l pl.UTF-8
 Pakiet zawiera sterowniki nowej generacji dla mikrofalowych kart
 sieciowych.
 
 %package -n kernel-smp-net-wlan-ng
 Summary:	Drivers for wireless microwave network cards
-Summary(pl):	Sterowniki mikrofalowych kart sieciowych
+Summary(pl.UTF-8):   Sterowniki mikrofalowych kart sieciowych
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Applications/System
 Requires(post,postun):	/sbin/depmod
@@ -90,13 +90,13 @@ Requires(postun):	%releq_kernel_smp
 %description -n kernel-smp-net-wlan-ng
 Drivers for microwave wirelless network cards.
 
-%description -n kernel-smp-net-wlan-ng -l pl
+%description -n kernel-smp-net-wlan-ng -l pl.UTF-8
 Pakiet zawiera sterowniki nowej generacji dla mikrofalowych kart
 sieciowych.
 
 %package -n kernel-net-wlan-ng-pcmcia
 Summary:	Drivers for PCMCIA wireless microwave network cards
-Summary(pl):	Sterowniki mikrofalowych kart sieciowych PCMCIA
+Summary(pl.UTF-8):   Sterowniki mikrofalowych kart sieciowych PCMCIA
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Applications/System
 Requires(post,postun):	/sbin/depmod
@@ -108,13 +108,13 @@ Requires(postun):	%releq_kernel_up
 %description -n kernel-net-wlan-ng-pcmcia
 Drivers for microwave wirelless PCMCIA network cards.
 
-%description -n kernel-net-wlan-ng-pcmcia -l pl
+%description -n kernel-net-wlan-ng-pcmcia -l pl.UTF-8
 Pakiet zawiera sterowniki nowej generacji dla mikrofalowych kart
 sieciowych PCMCIA.
 
 %package -n kernel-smp-net-wlan-ng-pcmcia
 Summary:	Drivers for PCMCIA wireless microwave network cards
-Summary(pl):	Sterowniki mikrofalowych kart sieciowych PCMCIA
+Summary(pl.UTF-8):   Sterowniki mikrofalowych kart sieciowych PCMCIA
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Applications/System
 Requires(post,postun):	/sbin/depmod
@@ -126,7 +126,7 @@ Requires(postun):	%releq_kernel_smp
 %description -n kernel-smp-net-wlan-ng-pcmcia
 Drivers for microwave wirelless PCMCIA network cards.
 
-%description -n kernel-smp-net-wlan-ng-pcmcia -l pl
+%description -n kernel-smp-net-wlan-ng-pcmcia -l pl.UTF-8
 Pakiet zawiera sterowniki nowej generacji dla mikrofalowych kart
 sieciowych PCMCIA.
 
