@@ -11,7 +11,7 @@
 #
 %define		_rel	0.1
 Summary:	Wireless microwave network card services - new generation 11Mbit
-Summary(pl.UTF-8):   Obsługa mikrofalowych kart sieciowych - nowa generacja 11Mbit
+Summary(pl.UTF-8):	Obsługa mikrofalowych kart sieciowych - nowa generacja 11Mbit
 Name:		linux-wlan-ng
 Version:	0.2.7
 Release:	%{_rel}
@@ -45,7 +45,7 @@ mikrofalowych kart sieciowych.
 
 %package pcmcia
 Summary:	PCMCIA wireless microwave network card services - new generation 11Mbit
-Summary(pl.UTF-8):   Obsługa mikrofalowych kart sieciowych PCMCIA - nowa generacja 11Mbit
+Summary(pl.UTF-8):	Obsługa mikrofalowych kart sieciowych PCMCIA - nowa generacja 11Mbit
 Release:	%{_rel}
 Group:		Applications/System
 Requires:	pcmcia-cs
@@ -60,7 +60,7 @@ mikrofalowych kart sieciowych PCMCIA.
 
 %package -n kernel-net-wlan-ng
 Summary:	Drivers for wireless microwave network cards
-Summary(pl.UTF-8):   Sterowniki mikrofalowych kart sieciowych
+Summary(pl.UTF-8):	Sterowniki mikrofalowych kart sieciowych
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Applications/System
 Requires(post,postun):	/sbin/depmod
@@ -78,7 +78,7 @@ sieciowych.
 
 %package -n kernel-smp-net-wlan-ng
 Summary:	Drivers for wireless microwave network cards
-Summary(pl.UTF-8):   Sterowniki mikrofalowych kart sieciowych
+Summary(pl.UTF-8):	Sterowniki mikrofalowych kart sieciowych
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Applications/System
 Requires(post,postun):	/sbin/depmod
@@ -96,7 +96,7 @@ sieciowych.
 
 %package -n kernel-net-wlan-ng-pcmcia
 Summary:	Drivers for PCMCIA wireless microwave network cards
-Summary(pl.UTF-8):   Sterowniki mikrofalowych kart sieciowych PCMCIA
+Summary(pl.UTF-8):	Sterowniki mikrofalowych kart sieciowych PCMCIA
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Applications/System
 Requires(post,postun):	/sbin/depmod
@@ -114,7 +114,7 @@ sieciowych PCMCIA.
 
 %package -n kernel-smp-net-wlan-ng-pcmcia
 Summary:	Drivers for PCMCIA wireless microwave network cards
-Summary(pl.UTF-8):   Sterowniki mikrofalowych kart sieciowych PCMCIA
+Summary(pl.UTF-8):	Sterowniki mikrofalowych kart sieciowych PCMCIA
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Applications/System
 Requires(post,postun):	/sbin/depmod
