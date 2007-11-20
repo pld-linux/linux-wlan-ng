@@ -1,4 +1,7 @@
 #
+# TODO:
+#	- check %%desc, R:, BR:, cflags
+#
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
 %bcond_without	kernel		# don't build kernel modules
@@ -6,10 +9,11 @@
 %bcond_without	smp		# don't build SMP module
 %bcond_without	userspace	# don't build userspace module
 %bcond_with	verbose		# verbose build (V=1)
-#
-# TODO:
-#	- check %%desc, R:, BR:, cflags
-#
+
+%if %{without kernel}
+%undefine	with_dist_kernel
+%endif
+
 %define		_rel	0.1
 Summary:	Wireless microwave network card services - new generation 11Mbit
 Summary(pl.UTF-8):	Obsługa mikrofalowych kart sieciowych - nowa generacja 11Mbit
@@ -26,8 +30,8 @@ Patch1:		%{name}-configure.patch
 Patch2:		%{name}-init.patch
 URL:		http://www.linux-wlan.com/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.268
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.7}
+BuildRequires:	rpmbuild(macros) >= 1.379
 %endif
 BuildRequires:	sed >= 4.0
 Requires(post,preun):	/sbin/chkconfig
@@ -59,7 +63,7 @@ wirelless PCMCIA networks cards dirvers for your PLD-Linux system.
 Pakiet linux-wlan-ng-pcmcia zawiera programy wspierające obsługę
 mikrofalowych kart sieciowych PCMCIA.
 
-%package -n kernel-net-wlan-ng
+%package -n kernel%{_alt_kernel}-net-wlan-ng
 Summary:	Drivers for wireless microwave network cards
 Summary(pl.UTF-8):	Sterowniki mikrofalowych kart sieciowych
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -70,14 +74,14 @@ Requires(post,postun):	/sbin/depmod
 Requires(postun):	%releq_kernel_up
 %endif
 
-%description -n kernel-net-wlan-ng
+%description -n kernel%{_alt_kernel}-net-wlan-ng
 Drivers for microwave wirelless network cards.
 
-%description -n kernel-net-wlan-ng -l pl.UTF-8
+%description -n kernel%{_alt_kernel}-net-wlan-ng -l pl.UTF-8
 Pakiet zawiera sterowniki nowej generacji dla mikrofalowych kart
 sieciowych.
 
-%package -n kernel-smp-net-wlan-ng
+%package -n kernel%{_alt_kernel}-smp-net-wlan-ng
 Summary:	Drivers for wireless microwave network cards
 Summary(pl.UTF-8):	Sterowniki mikrofalowych kart sieciowych
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -88,14 +92,14 @@ Requires(post,postun):	/sbin/depmod
 Requires(postun):	%releq_kernel_smp
 %endif
 
-%description -n kernel-smp-net-wlan-ng
+%description -n kernel%{_alt_kernel}-smp-net-wlan-ng
 Drivers for microwave wirelless network cards.
 
-%description -n kernel-smp-net-wlan-ng -l pl.UTF-8
+%description -n kernel%{_alt_kernel}-smp-net-wlan-ng -l pl.UTF-8
 Pakiet zawiera sterowniki nowej generacji dla mikrofalowych kart
 sieciowych.
 
-%package -n kernel-net-wlan-ng-pcmcia
+%package -n kernel%{_alt_kernel}-net-wlan-ng-pcmcia
 Summary:	Drivers for PCMCIA wireless microwave network cards
 Summary(pl.UTF-8):	Sterowniki mikrofalowych kart sieciowych PCMCIA
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -106,14 +110,14 @@ Requires(post,postun):	/sbin/depmod
 Requires(postun):	%releq_kernel_up
 %endif
 
-%description -n kernel-net-wlan-ng-pcmcia
+%description -n kernel%{_alt_kernel}-net-wlan-ng-pcmcia
 Drivers for microwave wirelless PCMCIA network cards.
 
-%description -n kernel-net-wlan-ng-pcmcia -l pl.UTF-8
+%description -n kernel%{_alt_kernel}-net-wlan-ng-pcmcia -l pl.UTF-8
 Pakiet zawiera sterowniki nowej generacji dla mikrofalowych kart
 sieciowych PCMCIA.
 
-%package -n kernel-smp-net-wlan-ng-pcmcia
+%package -n kernel%{_alt_kernel}-smp-net-wlan-ng-pcmcia
 Summary:	Drivers for PCMCIA wireless microwave network cards
 Summary(pl.UTF-8):	Sterowniki mikrofalowych kart sieciowych PCMCIA
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -124,10 +128,10 @@ Requires(post,postun):	/sbin/depmod
 Requires(postun):	%releq_kernel_smp
 %endif
 
-%description -n kernel-smp-net-wlan-ng-pcmcia
+%description -n kernel%{_alt_kernel}-smp-net-wlan-ng-pcmcia
 Drivers for microwave wirelless PCMCIA network cards.
 
-%description -n kernel-smp-net-wlan-ng-pcmcia -l pl.UTF-8
+%description -n kernel%{_alt_kernel}-smp-net-wlan-ng-pcmcia -l pl.UTF-8
 Pakiet zawiera sterowniki nowej generacji dla mikrofalowych kart
 sieciowych PCMCIA.
 
@@ -244,28 +248,28 @@ if [ "$1" = "0" ]; then
 	%service pcmcia restart
 fi
 
-%post -n kernel-net-wlan-ng
+%post -n kernel%{_alt_kernel}-net-wlan-ng
 %depmod %{_kernel_ver}
 
-%postun -n kernel-net-wlan-ng
+%postun -n kernel%{_alt_kernel}-net-wlan-ng
 %depmod %{_kernel_ver}
 
-%post -n kernel-smp-net-wlan-ng
+%post -n kernel%{_alt_kernel}-smp-net-wlan-ng
 %depmod %{_kernel_ver}
 
-%postun -n kernel-smp-net-wlan-ng
+%postun -n kernel%{_alt_kernel}-smp-net-wlan-ng
 %depmod %{_kernel_ver}
 
-%post -n kernel-net-wlan-ng-pcmcia
+%post -n kernel%{_alt_kernel}-net-wlan-ng-pcmcia
 %depmod %{_kernel_ver}
 
-%postun -n kernel-net-wlan-ng-pcmcia
+%postun -n kernel%{_alt_kernel}-net-wlan-ng-pcmcia
 %depmod %{_kernel_ver}
 
-%post -n kernel-smp-net-wlan-ng-pcmcia
+%post -n kernel%{_alt_kernel}-smp-net-wlan-ng-pcmcia
 %depmod %{_kernel_ver}
 
-%postun -n kernel-smp-net-wlan-ng-pcmcia
+%postun -n kernel%{_alt_kernel}-smp-net-wlan-ng-pcmcia
 %depmod %{_kernel_ver}
 
 %if %{with userspace}
@@ -284,26 +288,26 @@ fi
 
 %if %{with kernel}
 %if %{with up} || %{without dist_kernel}
-%files -n kernel-net-wlan-ng
+%files -n kernel%{_alt_kernel}-net-wlan-ng
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/drivers/net/wireless/p80211.ko*
 /lib/modules/%{_kernel_ver}/kernel/drivers/net/wireless/prism2_pci.ko*
 /lib/modules/%{_kernel_ver}/kernel/drivers/net/wireless/prism2_usb.ko*
 
-%files -n kernel-net-wlan-ng-pcmcia
+%files -n kernel%{_alt_kernel}-net-wlan-ng-pcmcia
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/drivers/net/wireless/prism2_cs.ko*
 /lib/modules/%{_kernel_ver}/kernel/drivers/net/wireless/prism2_plx.ko*
 %endif
 
 %if %{with smp} && %{with dist_kernel}
-%files -n kernel-smp-net-wlan-ng
+%files -n kernel%{_alt_kernel}-smp-net-wlan-ng
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}smp/kernel/drivers/net/wireless/p80211.ko*
 /lib/modules/%{_kernel_ver}smp/kernel/drivers/net/wireless/prism2_pci.ko*
 /lib/modules/%{_kernel_ver}smp/kernel/drivers/net/wireless/prism2_usb.ko*
 
-%files -n kernel-smp-net-wlan-ng-pcmcia
+%files -n kernel%{_alt_kernel}-smp-net-wlan-ng-pcmcia
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}smp/kernel/drivers/net/wireless/prism2_cs.ko*
 /lib/modules/%{_kernel_ver}smp/kernel/drivers/net/wireless/prism2_plx.ko*
