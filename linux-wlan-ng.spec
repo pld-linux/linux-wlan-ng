@@ -137,9 +137,9 @@ sieciowych PCMCIA.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
+%patch -P0 -p1
+%patch -P1 -p1
+%patch -P2 -p1
 
 %build
 sed -i "s#PCMCIA_SRC=.*#PCMCIA_SRC=%{_kernelsrcdir}#g; s#PRISM2_\([^=]*\)=[yn]#PRISM2_\1=y#; s#TARGET_ROOT_ON_HOST=#TARGET_ROOT_ON_HOST=$RPM_BUILD_ROOT#" config.in
